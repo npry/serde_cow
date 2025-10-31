@@ -37,6 +37,7 @@ mod str;
 extern crate alloc;
 
 /// A wrapper around [`Cow<str>`] to implement [`serde::Deserialize`] in the expected way.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct CowStr<'de>(pub Cow<'de, str>);
 
 impl serde::Serialize for CowStr<'_> {
@@ -51,7 +52,15 @@ impl<'de> serde::Deserialize<'de> for CowStr<'de> {
     }
 }
 
+impl<'de, T> From<T> for CowStr<'de> where Cow<'de, str>: From<T> {
+    #[inline]
+    fn from(value: T) -> Self {
+        Self(value.into())
+    }
+}
+
 /// A wrapper around `Cow<[u8]>` to implement [`serde::Deserialize`] in the expected way.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct CowBytes<'de>(pub Cow<'de, [u8]>);
 
 impl serde::Serialize for CowBytes<'_> {
@@ -63,5 +72,12 @@ impl serde::Serialize for CowBytes<'_> {
 impl<'de> serde::Deserialize<'de> for CowBytes<'de> {
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         deserializer.deserialize_bytes(bytes::CowBytesVisitor)
+    }
+}
+
+impl<'de, T> From<T> for CowBytes<'de> where Cow<'de, [u8]>: From<T> {
+    #[inline]
+    fn from(value: T) -> Self {
+        Self(value.into())
     }
 }
