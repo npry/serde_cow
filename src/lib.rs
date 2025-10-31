@@ -46,7 +46,7 @@ impl serde::Serialize for CowStr<'_> {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for CowStr<'de> {
+impl<'de: 'a, 'a> serde::Deserialize<'de> for CowStr<'a> {
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         deserializer.deserialize_string(str::CowStrVisitor)
     }
@@ -69,7 +69,7 @@ impl serde::Serialize for CowBytes<'_> {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for CowBytes<'de> {
+impl<'de: 'a, 'a> serde::Deserialize<'de> for CowBytes<'a> {
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         deserializer.deserialize_bytes(bytes::CowBytesVisitor)
     }
