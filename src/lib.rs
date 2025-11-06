@@ -39,6 +39,7 @@ extern crate alloc;
 
 /// A wrapper around [`Cow<str>`] to implement [`serde::Deserialize`] in the expected way.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[cfg_attr(feature = "ownable", derive(ownable::IntoOwned, ownable::ToOwned, ownable::ToBorrowed))]
 pub struct CowStr<'de>(pub Cow<'de, str>);
 
 impl core::fmt::Debug for CowStr<'_> {
@@ -76,6 +77,7 @@ impl<'de, T> From<T> for CowStr<'de> where Cow<'de, str>: From<T> {
 
 /// A wrapper around `Cow<[u8]>` to implement [`serde::Deserialize`] in the expected way.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[cfg_attr(feature = "ownable", derive(ownable::IntoOwned, ownable::ToOwned, ownable::ToBorrowed))]
 pub struct CowBytes<'de>(pub Cow<'de, [u8]>);
 
 impl core::fmt::Debug for CowBytes<'_> {
